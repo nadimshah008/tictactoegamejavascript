@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TIC TAC TOE</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <h1>TIC TAC TOE GAME</h1>
+    <h1 class="winnerDeclare"></h1>
+    <div class="gameWrapper">
+      <div class="block" isFilled="false"></div>
+      <div class="block" isFilled="false"></div>
+      <div class="block" isFilled="false"></div>
+      <div class="block" isFilled="false"></div>
+      <div class="block" isFilled="false"></div>
+      <div class="block" isFilled="false"></div>
+      <div class="block" isFilled="false"></div>
+      <div class="block" isFilled="false"></div>
+      <div class="block" isFilled="false"></div>
+    </div>
+    <button onclick="resetGame()" class="resetBtn">RESET</button>
+    <script>
+      var gameWrapper = document.querySelector(".gameWrapper");
+      var blocks = document.querySelectorAll(".block");
+      var winnerDeclare = document.querySelector(".winnerDeclare");
+      var resetBtn = document.querySelector(".resetBtn");
+      var winningPositions = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+        [1, 4, 7],
+        [2, 5, 8],
+        [3, 6, 9],
+        [1, 5, 9],
+        [3, 5, 7],
+      ];
+      var isGameOver = false;
+      var count = 0;
+      var xArray = [];
+      var oArray = [];
+      var isResetShow = false;
+      blocks.forEach((item, index) => {
+        item.addEventListener("click", (e) => {
+          if (item.getAttribute("isFilled") === "false" && !isGameOver) {
+            item.setAttribute("isFilled", "true");
+            if (count % 2 === 0) {
+              item.innerHTML = "X";
+              item.style.background = "green";
+              item.classList.add("glow");
+              xArray.push(index + 1);
+              checkWinningPositions(xArray);
+            } else {
+              item.innerHTML = "O";
+              item.classList.add("glow");
+              oArray.push(index + 1);
+              item.style.background = "red";
+              checkWinningPositions(oArray);
+            }
+            count++;
+          }
+        });
+      });
+      function checkWinningPositions(array) {
+        let isDraw = true;
+        winningPositions.forEach((item) => {
+          let winningArray = item.every((ele) => array.includes(ele));
+          if (winningArray) {
+            isResetShow = true;
+            if (array === xArray) {
+              winnerDeclare.innerHTML = "Winner is Player X";
+            }
+            if (array == oArray) {
+              winnerDeclare.innerHTML = " Winner is Player O";
+            }
+            isGameOver = true;
+            if (isResetShow && isGameOver) {
+              resetBtn.style.display = "block";
+            }
+          }
+        });
+        checkDraw();
+      }
+
+      function resetGame() {
+        isGameOver = false;
+        resetBtn.style.display = "none";
+        blocks.forEach((item) => {
+          item.setAttribute("isFilled", "false");
+          item.innerHTML = "";
+          item.classList.remove("glow");
+          item.style.background = "transparent";
+          winnerDeclare.innerHTML = "";
+          xArray = [];
+          oArray = [];
+        });
+      }
+
+      function checkDraw() {
+        if ([...xArray, ...oArray].length === blocks.length && !isGameOver) {
+          isResetShow = true;
+          isGameOver = true;
+          winnerDeclare.innerHTML = "It's a draw!";
+          resetBtn.style.display = "block";
+        }
+      }
+    </script>
+  </body>
+</html>
